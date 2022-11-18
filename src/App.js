@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import "./App.css";
+import { useState, useRef, useEffect } from 'react';
 
 function App() {
 
+  const imageRef = useRef();
+
   const [img, setImg] = useState([]);
-  const [left, setLeft] = useState(0);
-  const [right, setRight] = useState(0);
+  const [range, setRange] = useState(imageRef);
 
   const downloadImgFunction = (e) => {
     if (e.target.files.length !== 0) {
@@ -12,38 +14,60 @@ function App() {
     }
   }
 
-  const rotateRight = () => {
-    
+  const rotateRight = (e) => {
+    imageRef.current.style.transform += `rotate(-90deg)`;
   }
 
-  const rotateLeft = () => {
-
-    setLeft(left - 90); 
+  const rotateLeft = (e) => {
+    imageRef.current.style.transform += `rotate(90deg)`;
   }
-  
+
+  const changeRangeValue = () => {
+    setRange(range.current.style.transform += `rotate(1deg)`)
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', () => {
+      requestAnimationFrame(() => {
+        const rotation = window.scrollY / 10 % Math.PI;
+        imageRef.current.style.transform = `rotate(${rotation}deg)`;
+      });
+    });
+  }, [changeRangeValue]);
+
   return (
     <div className="App">
-      <div background="blue" width="100" height="100vh"> 
-        <center>
-          
+      <div>
+        <div id="titleAndSelectImg">
           <h2>Upload Something </h2>
-          <input type="file" onChange={downloadImgFunction} />
+          <div id="inputFile">
+            Add Images
+            <input type="file" onChange={downloadImgFunction} />
+          </div>
+        </div>
+        <div id="main">
+          <div id="eachContainerOfImg">
 
-          <h2>Img colection</h2>
-          {img.map((elem) => {
-            return <>
-              <div key={elem}>
-              <button onClick={rotateLeft} height="200"> Turn Left </button>
+            {img.map((elem) => {
+              return (
+                <div id="itemContainer" key={elem}>
 
-                <img src={elem} height="200" width="200" alt="med1" margin="40" />
+                  <div id="itemContainerWithoutRangeInput">
 
-                <button height="200"> Turn right </button>
-              </div>
-            </>
-          })}
-        </center>
+                    <div><button id='leftButton' onClick={rotateLeft} > Turn Left </button></div>
+                    <div id="imgContainer"><img ref={imageRef} src={elem} alt="img" /></div>
+                    <div><button id='rightButton' onClick={rotateRight} > Turn right </button></div>
+                  </div>
+                  <div id="git ">
+                    <input onChange={changeRangeValue} type="range" id="vol" name="vol" min="0" max="360" />
+                  </div>
+
+                </div>)
+            })}
+          </div>
+        </div>
       </div>
-    </div>
+    </div >
   );
 }
 export default App;
