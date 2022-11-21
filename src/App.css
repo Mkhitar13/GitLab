@@ -5,8 +5,8 @@ img{
 
 .App {
   width: 100%;
-  height: 200vh;
-  background-color: navy;
+  height: auto;
+  background-color: rgb(0, 0, 117);
 }
 
 #titleAndSelectImg{
@@ -70,8 +70,12 @@ img{
   
 }
 
-#inputRange{
-  margin-top: 130px ; 
+#rangeInput{
+  margin-top: 60px ; 
+}
+
+#rangeInput input{
+  cursor: pointer;
 }
 #imgContainer{
   width: 300px;

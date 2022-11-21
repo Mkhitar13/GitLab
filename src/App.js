@@ -1,39 +1,30 @@
 import "./App.css";
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 
 function App() {
 
   const imageRef = useRef();
 
   const [img, setImg] = useState([]);
-  const [range, setRange] = useState(imageRef);
+  const [rotate, setRotate] = useState(0);
 
   const downloadImgFunction = (e) => {
     if (e.target.files.length !== 0) {
-      setImg(imgfile => [...imgfile, URL.createObjectURL(e.target.files[0])])
+      let imgURL = URL.createObjectURL(e.target.files[0]);
+      setImg(imgfile => [...imgfile, imgURL])
     }
   }
 
-  const rotateRight = (e) => {
-    imageRef.current.style.transform += `rotate(-90deg)`;
-  }
-
   const rotateLeft = (e) => {
-    imageRef.current.style.transform += `rotate(90deg)`;
+    e.target.nextSibling.style.transform += `rotate(-90deg)`;
+    e.target.nextSibling.style.transition = `1s`;
+
   }
 
-  const changeRangeValue = () => {
-    setRange(range.current.style.transform += `rotate(1deg)`)
+  const rotateRight = (e) => {
+    e.target.previousSibling.style.transform += `rotate(90deg)`;
+    e.target.previousSibling.style.transition = `1s`;
   }
-
-  useEffect(() => {
-    window.addEventListener('scroll', () => {
-      requestAnimationFrame(() => {
-        const rotation = window.scrollY / 10 % Math.PI;
-        imageRef.current.style.transform = `rotate(${rotation}deg)`;
-      });
-    });
-  }, [changeRangeValue]);
 
   return (
     <div className="App">
@@ -54,14 +45,22 @@ function App() {
 
                   <div id="itemContainerWithoutRangeInput">
 
-                    <div><button id='leftButton' onClick={rotateLeft} > Turn Left </button></div>
-                    <div id="imgContainer"><img ref={imageRef} src={elem} alt="img" /></div>
-                    <div><button id='rightButton' onClick={rotateRight} > Turn right </button></div>
-                  </div>
-                  <div id="git ">
-                    <input onChange={changeRangeValue} type="range" id="vol" name="vol" min="0" max="360" />
-                  </div>
+                    <button id='leftButton' onClick={rotateLeft} > Turn Left </button>
+                    <div id="imgContainer" >
+                      <img ref={imageRef} src={elem} alt="img" style={{ transform: `rotate(${rotate}deg)` }} />
+                    </div>
+                    <button id='rightButton' onClick={rotateRight}> Turn right </button>
 
+                  </div>
+                  <div id="rangeInput">
+                    <input
+                      type="range"
+                      min="0"
+                      max="360"
+                      value={rotate}
+                      onInput={(e) => setRotate(e.target.value)}
+                    />
+                  </div>
                 </div>)
             })}
           </div>
