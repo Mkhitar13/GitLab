@@ -4,15 +4,19 @@ import { useState, useRef } from 'react';
 function App() {
 
   const imageRef = useRef();
-
   const [img, setImg] = useState([]);
-  const [rotate, setRotate] = useState(0);
 
   const downloadImgFunction = (e) => {
     if (e.target.files.length !== 0) {
       let imgURL = URL.createObjectURL(e.target.files[0]);
       setImg(imgfile => [...imgfile, imgURL])
     }
+  }
+
+  const rotateFull = (e) => {
+    e.target.parentNode.previousSibling.children[1].style.transform = `rotate(${e.target.value}deg)`;
+    e.target.parentNode.previousSibling.children[1].style.transition = `1s`;
+
   }
 
   const rotateLeft = (e) => {
@@ -47,18 +51,22 @@ function App() {
 
                     <button id='leftButton' onClick={rotateLeft} > Turn Left </button>
                     <div id="imgContainer" >
-                      <img ref={imageRef} src={elem} alt="img" style={{ transform: `rotate(${rotate}deg)` }} />
+                      <a href={elem} download>
+
+                        <img ref={imageRef} src={elem} alt="img" />
+                      </a>
                     </div>
                     <button id='rightButton' onClick={rotateRight}> Turn right </button>
 
                   </div>
                   <div id="rangeInput">
+
                     <input
                       type="range"
                       min="0"
                       max="360"
-                      value={rotate}
-                      onInput={(e) => setRotate(e.target.value)}
+                      defaultValue={0}
+                      onInput={rotateFull}
                     />
                   </div>
                 </div>)
